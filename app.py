@@ -44,8 +44,8 @@ st.title("🛡️ Risiko als Ziel: Erwartungswert und CVaR")
 st.markdown(
     """
 Ein Plan, der **im Mittel** am billigsten ist, kann in den **schlechtesten Szenarien** sehr teuer werden. Der **CVaR** (Conditional Value at Risk) ist das Mittel der
-teuersten 10 oder 20 % der Szenarien. Diese Demo fragt: **Was kostet es, den Schwanz zu drücken, und lohnt es sich?** Dazu mischt sie Mittelwert und CVaR mit
-einem Gewicht λ und zeigt, wie sich Kosten und Schwanz zueinander verhalten.
+teuersten 10 oder 20 % der Szenarien. Diese Demo fragt: **Was kostet es, den Tail zu drücken, und lohnt es sich?** Dazu mischt sie Mittelwert und CVaR mit
+einem Gewicht λ und zeigt, wie sich Kosten und Tail zueinander verhalten.
 
 Anders als die Fall-Demos zeigt sie **ein** Verfahren an einem wachsenden Beispiel, mit demselben Kapazitäts-Vehikel wie die
 [Wurzel der Linie](https://github.com/sebastian-hanisch/newsvendor-evpi-demo) und die Stichproben-Demo davor; die Szenarien kommen hier aus einer Stichprobe.
@@ -82,12 +82,12 @@ with st.sidebar:
     st.markdown("**Risiko**")
     lam = st.slider("Gewicht λ auf den CVaR", *bounds("lam_slider"), step=C.LAMBDA_STEP, key="lam_slider",
                     help="0: nur der Erwartungswert (Mittelwertplan). 1: nur der CVaR. Dazwischen die Mischung.")
-    alpha = st.radio("Schwanz: teuerste Szenarien", C.ALPHA_CHOICES, key="alpha_radio", horizontal=True,
+    alpha = st.radio("Tail: teuerste Szenarien", C.ALPHA_CHOICES, key="alpha_radio", horizontal=True,
                      format_func=lambda a: f"{round((1 - a) * 100)} %",
                      help="Welcher Anteil der teuersten Szenarien in den CVaR eingeht.")
     st.markdown("**Stichprobe**")
     s = st.slider("Szenarienzahl S der Stichprobe", *bounds("s_slider"), step=C.S_STEP, key="s_slider",
-                  help="Wie viele Szenarien die Pläne sehen. Der Schwanz besteht aus (1 − α) · S Szenarien.")
+                  help="Wie viele Szenarien die Pläne sehen. Der Tail besteht aus (1 − α) · S Szenarien.")
     draw = st.number_input("Ziehung (Zufalls-Seed der Stichprobe)", *bounds("draw_input"), key="draw_input", step=1)
     st.button("🎲 Neue Ziehung", width="stretch", on_click=new_draw)
     st.markdown("**Nachfrage und Möglichkeiten**")
@@ -125,7 +125,7 @@ m2.metric(f"CVaR {round((1 - settings.alpha) * 100)} %, Risikoplan", f"{a.risk_p
 m3.metric("Mittel, Mittelwertplan", f"{a.mean_plan.mean:,.0f}".replace(",", "."), delta="Referenz", delta_color="off")
 m4.metric(f"CVaR {round((1 - settings.alpha) * 100)} %, Mittelwertplan", f"{a.mean_plan.cvar:,.0f}".replace(",", "."), delta="Referenz", delta_color="off")
 st.plotly_chart(build_distribution(a.mean_plan, a.risk_plan, settings.alpha), width="stretch", key="distribution_chart")
-st.caption("Verteilung der Gesamtkosten über die 600 Referenzszenarien. Der Risikoplan verschiebt Kosten aus dem rechten Schwanz in die Mitte, bezahlt dafür aber im Mittel.")
+st.caption("Verteilung der Gesamtkosten über die 600 Referenzszenarien. Der Risikoplan verschiebt Kosten aus dem rechten Tail in die Mitte, bezahlt dafür aber im Mittel.")
 
 left, right = st.columns(2)
 with left:
@@ -137,7 +137,7 @@ with right:
 
 # --- Kernfrage ---------------------------------------------------------------------------------------------------------------------------
 
-st.markdown("## ❓ Kernfrage: Lohnt es sich, den Schwanz zu drücken?")
+st.markdown("## ❓ Kernfrage: Lohnt es sich, den Tail zu drücken?")
 tail_n = max(1, round((1 - settings.alpha) * settings.s))
 if a.verdict == "kein_unterschied":
     if settings.lam == 0.0:
@@ -145,20 +145,20 @@ if a.verdict == "kein_unterschied":
     else:
         st.info(
             f"**Hier ändert das Risikomaß kaum etwas:** Der Risikoplan verändert den CVaR um {_pct(a.cvar_change_pct)} und die mittleren Kosten um {_pct(a.mean_change_pct)}. "
-            "Bei knappem Kapazitätsbudget wird nur verteilt, nicht zusätzlich vorgehalten: Es gibt keinen Spielraum, den Schwanz zu drücken."
+            "Bei knappem Kapazitätsbudget wird nur verteilt, nicht zusätzlich vorgehalten: Es gibt keinen Spielraum, den Tail zu drücken."
         )
 elif a.verdict == "tausch":
     price = a.mean_change_pct
     gain = -a.cvar_change_pct
     st.success(
-        f"**Ein Tausch:** Der Schwanz sinkt um {_de(gain)} %, dafür steigen die mittleren Kosten um {_de(price)} %. "
-        f"Je gewonnenem Prozent Schwanz kostet das {_de(price / gain, 2)} Prozent im Mittel."
+        f"**Ein Tausch:** Der Tail sinkt um {_de(gain)} %, dafür steigen die mittleren Kosten um {_de(price)} %. "
+        f"Je gewonnenem Prozent Tail kostet das {_de(price / gain, 2)} Prozent im Mittel."
     )
 else:
     st.warning(f"**Nur Kosten, kein Gewinn:** mittlere Kosten {_pct(a.mean_change_pct)}, CVaR {_pct(a.cvar_change_pct)}.")
 st.caption(
-    f"Der Schwanz besteht in der Stichprobe aus {tail_n} Szenarien ((1 − α) · S). Mit wenigen Szenarien ist der Risikoplan unsicher: "
-    "Er kann auf der Referenz schlechter abschneiden als ein Plan mit weniger Gewicht auf dem Schwanz (siehe Pareto-Kurve und Experiment)."
+    f"Der Tail besteht in der Stichprobe aus {tail_n} Szenarien ((1 − α) · S). Mit wenigen Szenarien ist der Risikoplan unsicher: "
+    "Er kann auf der Referenz schlechter abschneiden als ein Plan mit weniger Gewicht auf dem Tail (siehe Pareto-Kurve und Experiment)."
 )
 
 st.markdown("---")
@@ -187,7 +187,7 @@ if st.session_state.get("experiment_done") == exp_key:
     if exp_key.lam > 0 and first["regret_mean"] > 0:
         st.info(
             f"Bei {first['s']} Szenarien liegt der Regret des Risikoplans im Mittel bei {_de(first['regret_risk'], 2)} % gegenüber "
-            f"{_de(first['regret_mean'], 2)} % beim Mittelwertplan, das {_de(first['regret_risk'] / first['regret_mean'], 1)}-Fache. Der Schwanz ist die "
+            f"{_de(first['regret_mean'], 2)} % beim Mittelwertplan, das {_de(first['regret_risk'] / first['regret_mean'], 1)}-Fache. Der Tail ist die "
             "dünnste Stelle der Stichprobe."
         )
 else:
@@ -203,8 +203,8 @@ st.markdown(
 | Annahme | Was passiert, wenn sie verletzt ist | Wer setzt an |
 |---|---|---|
 | **Kapazität ist frei wählbar** | Bei knappem Budget wird nur verteilt: Der Risikoplan unterscheidet sich kaum vom Mittelwertplan, es gibt nichts Zusätzliches zu kaufen. | – |
-| **CVaR ist das richtige Risikomaß** | Es ist eines unter mehreren (Varianz, Wahrscheinlichkeit einer Überschreitung, Worst Case). Es erfasst den Schwanz im Mittel, nicht dessen Form. | – |
-| **Die Stichprobe zeigt den Schwanz** | Der Schwanz besteht nur aus (1 − α) · S Szenarien. Seltene Ereignisse, die in der Stichprobe fehlen, kennt der Plan nicht. | [Stichproben-Demo (SAA)](https://github.com/sebastian-hanisch/saa-demo): wie viele Szenarien der Erwartungswertplan braucht |
+| **CVaR ist das richtige Risikomaß** | Es ist eines unter mehreren (Varianz, Wahrscheinlichkeit einer Überschreitung, Worst Case). Es erfasst den Tail im Mittel, nicht dessen Form. | – |
+| **Die Stichprobe zeigt den Tail** | Der Tail besteht nur aus (1 − α) · S Szenarien. Seltene Ereignisse, die in der Stichprobe fehlen, kennt der Plan nicht. | [Stichproben-Demo (SAA)](https://github.com/sebastian-hanisch/saa-demo): wie viele Szenarien der Erwartungswertplan braucht |
 | **Die 600 Referenzszenarien sind die wahre Verteilung** | Das ist eine Setzung; eine echte Verteilung hat mehr Rand, und der echte CVaR liegt vermutlich höher. | – |
 | **Ein Vehikel, feste Preise** | Wie viel der Risikoplan kostet, hängt an Streuung, Zukaufpreis und Fehlmenge-Strafe; die Zahlen lassen sich nicht auf andere Probleme übertragen. | – |
 """
@@ -224,7 +224,7 @@ $$\min_{x,\eta,z,\,\text{Stufe 2}}\;\; c\,\mathbf 1^\top x+(1-\lambda)\tfrac1S\s
 Der erste Term $c\,\mathbf 1^\top x$ ist deterministisch und verschiebt den CVaR genau um sich selbst, deshalb genügt es, den CVaR der Stufe-2-Kosten zu bilden.
 
 **Eigenschaften.** $\mathrm{CVaR}_\alpha$ ist kohärent und konvex in $x$; bei $\lambda=0$ ist der Plan der Mittelwertplan, bei $\lambda=1$ der reine CVaR-Plan. Pläne für $\lambda\in(0,1)$ liegen
-auf der Pareto-Kurve aus Erwartungswert und CVaR; wie viele Szenarien man für einen stabilen Plan braucht, steigt, weil nur $(1-\alpha)S$ Szenarien den Schwanz bestimmen.
+auf der Pareto-Kurve aus Erwartungswert und CVaR; wie viele Szenarien man für einen stabilen Plan braucht, steigt, weil nur $(1-\alpha)S$ Szenarien den Tail bestimmen.
 
 **Literatur.** Rockafellar & Uryasev, *Optimization of Conditional Value-at-Risk*, Journal of Risk 2(3), 2000, S. 21–41 (Theoreme 1 und 2: LP-Darstellung für Szenarien);
 dort heißen das Niveau β und die Hilfsvariable α, die Formel oben ist dieselbe in der in der Stochastik üblichen Notation.

@@ -19,9 +19,9 @@ def test_default_trades_mean_for_tail(presets):
 
 
 def test_pure_tail_focus_costs_more_in_the_mean_for_a_similar_tail(presets):
-    a, b = presets["Standardfall (Voreinstellung)"], presets["Nur den Schwanz im Blick"]
+    a, b = presets["Standardfall (Voreinstellung)"], presets["Nur den Tail im Blick"]
     assert b.mean_change_pct > a.mean_change_pct + 5.0
-    assert abs(b.cvar_change_pct - a.cvar_change_pct) < 3.0       # der Schwanz gewinnt kaum noch etwas dazu
+    assert abs(b.cvar_change_pct - a.cvar_change_pct) < 3.0       # der Tail gewinnt kaum noch etwas dazu
 
 
 def test_tight_budget_makes_the_risk_measure_almost_irrelevant(presets):
@@ -37,14 +37,14 @@ def test_the_frontier_is_ordered_in_lambda_and_overfits_at_the_extreme(presets):
     cvars = [p[2] for p in f]
     assert means == sorted(means)
     assert cvars[2] < cvars[1] < cvars[0]
-    # dieselbe Ziehung: das Gewicht 0,75 hat auf der Referenz einen niedrigeren CVaR als das Gewicht 1 (der reine CVaR-Plan überpasst den Schwanz der 100 Szenarien)
+    # dieselbe Ziehung: das Gewicht 0,75 hat auf der Referenz einen niedrigeren CVaR als das Gewicht 1 (der reine CVaR-Plan überpasst den Tail der 100 Szenarien)
     assert cvars[3] < cvars[4]
 
 
 def test_few_scenarios_give_a_larger_mean_price_for_the_same_tail(presets):
     few = presets["Wenige Szenarien"]
     assert few.verdict == "tausch"
-    assert few.mean_change_pct < presets["Nur den Schwanz im Blick"].mean_change_pct
+    assert few.mean_change_pct < presets["Nur den Tail im Blick"].mean_change_pct
 
 
 def test_a_deeper_tail_costs_more():

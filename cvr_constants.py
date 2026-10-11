@@ -49,7 +49,7 @@ PRESETS = {
         "s": DEFAULT_S, "sigma": DEFAULT_SIGMA, "lam": DEFAULT_LAMBDA, "alpha": DEFAULT_ALPHA,
         "budget": DEFAULT_BUDGET, "transfer": DEFAULT_TRANSFER, "seed": DEFAULT_SEED, "draw": DEFAULT_DRAW,
     },
-    "Nur den Schwanz im Blick": {
+    "Nur den Tail im Blick": {
         "s": DEFAULT_S, "sigma": DEFAULT_SIGMA, "lam": 1.0, "alpha": DEFAULT_ALPHA,
         "budget": DEFAULT_BUDGET, "transfer": DEFAULT_TRANSFER, "seed": DEFAULT_SEED, "draw": DEFAULT_DRAW,
     },
@@ -63,8 +63,8 @@ PRESETS = {
     },
 }
 PRESET_HELP = {
-    "Standardfall (Voreinstellung)": "Gewicht 0,5 auf den Schwanz (CVaR, 90 %), Kapazität frei, 100 Szenarien, Streuung 35 %.",
-    "Nur den Schwanz im Blick": "Gewicht 1: der Plan minimiert nur die Kosten der schlimmsten 10 % der Szenarien.",
+    "Standardfall (Voreinstellung)": "Gewicht 0,5 auf den Tail (CVaR, 90 %), Kapazität frei, 100 Szenarien, Streuung 35 %.",
+    "Nur den Tail im Blick": "Gewicht 1: der Plan minimiert nur die Kosten der schlimmsten 10 % der Szenarien.",
     "Knappes Budget: Risiko ändert kaum etwas": "Das Budget bindet, es wird nur verteilt: der Risikoplan unterscheidet sich kaum vom Mittelwertplan.",
-    "Wenige Szenarien": "Nur 20 Szenarien: der Schwanz besteht aus zwei Szenarien, der Risikoplan streut stark.",
+    "Wenige Szenarien": "Nur 20 Szenarien: der Tail besteht aus zwei Szenarien, der Risikoplan streut stark.",
 }
