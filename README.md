@@ -42,7 +42,7 @@ Voreinstellung (Seed 7, Ziehung 1, S = 100, α = 90 %, Streuung 35 %, Kapazität
 
 - **Die Referenz ist gesetzt, nicht gefunden.** Die 600 Szenarien sind die Verteilung; eine echte Verteilung hat mehr Rand, und der echte Tail liegt vermutlich höher.
 - **Nur CVaR.** Es ist ein Risikomaß unter mehreren und erfasst den Tail im Mittel, nicht dessen Form.
-- **Eine Instanz, wenige Ziehungen.** Die Pareto-Kurve stammt aus einer Ziehung; die Median-Werte über fünf Ziehungen und das Experiment (16 Ziehungen je Szenarienzahl) tragen Stichprobenfehler. Ordnung und Größenordnung sind belastbar.
+- **Eine Instanz, wenige Ziehungen.** Die Pareto-Kurve stammt aus einer Ziehung; die Median-Werte über fünf Ziehungen und das Experiment (16 Ziehungen je Szenarienzahl) enthalten Stichprobenfehler. Ordnung und Größenordnung sind belastbar.
 - **Das Bild hängt an der freien Kapazität.** Bei knappem Budget gibt es kaum etwas zu gewinnen.
 
 ## Verifikation
